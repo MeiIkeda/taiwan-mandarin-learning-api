@@ -1,1 +1,1 @@
-web: java -Dserver.port=28000 -jar target/*.jar --server.port=28000 --spring.profiles.active=heroku
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/0.0.1-SNAPSHOT.jar
