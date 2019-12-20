@@ -39,6 +39,8 @@ dependencies {
 	compile 'org.projectlombok:lombok:1.16.6'
 	compile('io.sentry:sentry-logback:1.7.22')
 	compile('io.sentry:sentry-spring:1.7.22')
+	compile('com.sendgrid:sendgrid-java:4.3.0')
+	compile('com.sendgrid:java-http-client:4.2.0')
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	runtime 'org.springframework.boot:spring-boot-devtools'
 	runtime 'mysql:mysql-connector-java'
