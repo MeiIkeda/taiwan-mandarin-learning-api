@@ -1,24 +1,15 @@
 package com.learning.mandarin.controller.contact;
 
-
-import com.learning.mandarin.controller.announce.dto.AnnouncementDto;
-import com.learning.mandarin.controller.announce.dto.AnnouncementOutputDto;
+import com.sendgrid.*;
 import com.learning.mandarin.controller.contact.dto.ContactDto;
-import com.learning.mandarin.domain.Announcement;
-import com.learning.mandarin.domain.AnnouncementRepository;
 import com.learning.mandarin.exception.ServiceUnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.*;
-
-import javax.mail.MessagingException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -26,28 +17,38 @@ import java.util.List;
 public class ContactController {
 
     @Autowired
-    private MailSender mailSender;
+    private SendGrid sendGrid;
 
     @Value("${organaizer.mail.address}")
     private String mailAddress;
 
     @CrossOrigin
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void getAllData(@RequestBody ContactDto dto) throws ServiceUnavailableException{
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(mailAddress);
-        //msg.setCc("送信先メールアドレス2", "送信先メールアドレス3");
-        //msg.setBcc("送信先メールアドレス4");
-        msg.setSubject("台湾華語問い合わせ:" + dto.title);
-        String contents = "名前：" + dto.name + "\n" + "会社/団体名：" + dto.company + "\n" +
-                "Email：" + dto.email + "\n" + "内容：\n" + dto.inquiry + "\n";
-        msg.setText(contents);
-        // メール送信
+    public void sendMail(@RequestBody ContactDto dto) throws IOException {
+
+        Email from = new Email(dto.email);
+        String subject = "台湾華語問い合わせ:" + dto.title;
+        Email to = new Email(mailAddress);
+        Content content = new Content("text/plain",
+                "名前：" + dto.name + "\n" + "会社/団体名：" + dto.company + "\n" +
+                        "Email：" + dto.email + "\n" + "内容：\n" + dto.inquiry + "\n");
+
+        Mail mail = new Mail(from, subject, to, content);
+
+        Request request = new Request();
         try {
-            mailSender.send(msg);
-        } catch (Exception e) {
-            log.error("ContactController.getAllData", e);
-            throw new ServiceUnavailableException();
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            Response response = sendGrid.api(request);
+
+            // SendGridからのレスポンスが200/202以外なら例外
+            if (!(response.getStatusCode() == 200 || response.getStatusCode() == 202))  {
+                throw new IOException("SendGrid error");
+            }
+        } catch (IOException ex) {
+            log.error("ContactController.sendMail", ex);
+            throw new IOException();
         }
     }
 }
