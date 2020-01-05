@@ -17,15 +17,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.httpBasic()
-                .and()
+        http//.httpBasic() //TODO temporal
+              //  .and() //TODO temporal
                 .authorizeRequests()
                 //.anyRequest().authenticated() //TODO temporal
                 .anyRequest().permitAll()//temporal solution
 //                //IP固定出来たら
 //                //.anyRequest().access("hasIpAddress('0:0:0:0:0:0:0:1') or hasIpAddress('127.0.0.1')")
-              //  .and() //TODO temporal
-              //  .cors().configurationSource(corsConfigurationSource()) //TODO temporal
+                .and()
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable();
     }
