@@ -13,15 +13,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Override protected void configure(AuthenticationManagerBuilder auth) throws Exception { super.configure(auth); }
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.httpBasic()
                 .and()
                 .authorizeRequests()
-                //IP固定出来たら
-                //.anyRequest().access("hasIpAddress('0:0:0:0:0:0:0:1') or hasIpAddress('127.0.0.1')")
-                //.antMatchers("/api/v1/**").permitAll()
-                .antMatchers("/api/v1/**").permitAll()
+                .anyRequest().authenticated()
+//                //IP固定出来たら
+//                //.anyRequest().access("hasIpAddress('0:0:0:0:0:0:0:1') or hasIpAddress('127.0.0.1')")
                 .and()
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
