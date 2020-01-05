@@ -20,7 +20,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic()
                 .and()
                 .authorizeRequests()
-                .anyRequest().authenticated()
+                //.anyRequest().authenticated()
+                .anyRequest().permitAll()//temporal solution
 //                //IP固定出来たら
 //                //.anyRequest().access("hasIpAddress('0:0:0:0:0:0:0:1') or hasIpAddress('127.0.0.1')")
                 .and()
