@@ -20,12 +20,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic()
                 .and()
                 .authorizeRequests()
-                .anyRequest().authenticated()
-                //.anyRequest().permitAll()//temporal solution
+                //.anyRequest().authenticated() //TODO temporal
+                .anyRequest().permitAll()//temporal solution
 //                //IP固定出来たら
 //                //.anyRequest().access("hasIpAddress('0:0:0:0:0:0:0:1') or hasIpAddress('127.0.0.1')")
-                .and()
-                .cors().configurationSource(corsConfigurationSource())
+              //  .and() //TODO temporal
+              //  .cors().configurationSource(corsConfigurationSource()) //TODO temporal
                 .and()
                 .csrf().disable();
     }
